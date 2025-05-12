@@ -1,7 +1,7 @@
 
 # 💡 Smart Switch
 
-An Arduino-based project to control a smart switch using a microcontroller.
+An Arduino-based project to control and normal switch to smart switch using a microcontroller.
 
 ---
 
