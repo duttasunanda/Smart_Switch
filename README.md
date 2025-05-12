@@ -1,75 +1,53 @@
-# 💡 Smart Bulb Controller
+💡 Smart Switch 
+An Arduino-based project to control a smart switch using a microcontroller.
 
-An Arduino-based project to control a smart bulb using a microcontroller.
+🚀 Features
+Control the Smart Switch's state (on/off) via microcontroller inputs.
 
----
+Simple and efficient code written in C++.
 
-## 🚀 Features
+Designed for easy integration with home automation systems.
 
-* Control the smart bulb's state (on/off) via microcontroller inputs.
-* Simple and efficient code written in C++.
-* Designed for easy integration with home automation systems.
+🧰 Getting Started
+Prerequisites
+Installed Arduino IDE on your computer.
 
----
+An Arduino-compatible microcontroller (e.g., Arduino Ethernet, ESP32, ESP8266).
 
-## 🧰 Getting Started
+A smart switch compatible with microcontroller control.
 
-### Prerequisites
+Installation
+Follow the youtube Vedio --
 
-* Arduino IDE installed on your computer.
-* An Arduino-compatible microcontroller (e.g., Arduino Uno).
-* A smart bulb compatible with microcontroller control.
+Dounload this repository as zip :
 
-### Installation
+Extract zip folder 
+Open smart_bulbe.ino in the Arduino IDE
+Edit
+Connect your microcontroller board to your computer via USB.
+Upload the sketch to your microcontroller.
 
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/duttasunanda/Smart_Bulb.git
-   ```
-
-
-
-2. Open `smart_bulbe.ino` in the Arduino IDE.
-3. Connect your microcontroller to your computer via USB.
-4. Upload the sketch to your microcontroller.
-
----
-
-## 🔧 Usage
-
+🔧 Usage
 Once the code is uploaded:
+open the serial motiter 
+copy ip address 
+open the ip address in browser 
 
-* Use the designated input (e.g., a button or serial command) to toggle the smart bulb's state.
-* Ensure the microcontroller is properly connected to the smart bulb's control interface.
+your smart swith virtual remote is ready on your device ( computer/ mobile )
 
----
+📁 Repository Structure
+smart_switch.ino - Main Arduino sketch for controlling the smart switch.
 
-## 📁 Repository Structure
+README.md - Project documentation.
 
-* `smart_bulbe.ino` - Main Arduino sketch for controlling the smart bulb.
-* `README.md` - Project documentation.
-* `LICENSE` - MIT License for open-source use.
+LICENSE - MIT License for open-source use.
 
----
+📜 License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 Contributing
-
+🤝 Contributing
 Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
----
-
-## 📞 Contact
-
+📞 Contact
 For any questions or suggestions, please open an issue on this repository.
-
----
-
-Feel free to customize this `README.md` further to match your project's specifics and your personal preferences.
-
+email - (Open profile)
