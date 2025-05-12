@@ -1,7 +1,3 @@
-Here's an enhanced and visually appealing `README.md` for your [Smart\_Bulb](https://github.com/duttasunanda/Smart_Bulb.git) repository. This version includes detailed setup instructions, component lists, and usage guidelines to assist users in replicating and understanding your project.
-
----
-
 # 💡 Smart Bulb Controller
 
 An Arduino-based project to control a smart bulb using a microcontroller.
