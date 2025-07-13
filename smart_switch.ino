@@ -1,17 +1,17 @@
-#include <ESP8266WiFi.h> // this is the esp8266wifi libary for esp8266 board 
-                        //if your board is esp32 then change "ESP8266WiFi.h" to "WiFi.h"
+#include <WiFi.h> // this is the wifi libary for esp32 board 
+                        //if your board is esp8266 then change "WiFi.h" to "ESP8266WiFi.h"
 
 const char* ssid = "smart bulb  "; // write here your wifi/hotspot name 
 const char* password = "12345abcd"; // write here you wifi/hotspot password 
 
-const int relayPin = D1;// relay singnal pin has been declared at d1 (chage accordingly)
+const int relayPin = 2;// relay singnal pin has been declared at GPIO 2 (chage accordingly)
 
 WiFiServer server(80);//creates a web server object that listens incoming connections on port 80, default port for https traffic 
 
 void setup() { // 'setup' is a stater code which starts the microcontroller and run the code only once 
   Serial.begin(115200);// it starts communicating between microcontroller and computer at the rate of 115200 bits per second data transfer/recive  
-  pinMode(relayPin, OUTPUT);// sets relaypin(D1) as a output of the code 
-  digitalWrite(relayPin, LOW);//sets relaypin(D1) off initially  
+  pinMode(relayPin, OUTPUT);// sets relaypin(GPIO 2) as a output of the code 
+  digitalWrite(relayPin, LOW);//sets relaypin(GPIO 2) off initially  
 
   WiFi.begin(ssid, password);// connects with your wifi 
   Serial.println("Connecting to WiFi...");// it prints the "Connecting to WiFi..." in the serial monitor
@@ -100,8 +100,8 @@ void loop() {// loop continue the instruction till the board gets power
 <body>
   <h1>ZenInfiny Smart Bulb</h1>
   <div class="subtext">Control your lighting with ease</div>
-  <a href="/ON" class="button on">Turn ON</a> // href='/ON' send a request to the server 
-  <a href="/OFF" class="button off">Turn OFF</a>// href='/ON' send a request to the server
+  <a href="/ON" class="button on">Turn ON</a> 
+  <a href="/OFF" class="button off">Turn OFF</a>
   <footer>
     Developed by Sunanda Dutta &copy; 2025 ZenInfiny
   </footer>
