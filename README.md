@@ -9,7 +9,7 @@ An Arduino-based project to control and normal switch to smart switch using a mi
 
 * **Microcontroller Control**: Toggle the smart switch's state (on/off) via microcontroller inputs.
 * **Efficient Code**: Simple and efficient code written in C++.
-* **Home Automation Ready**: Designed for easy integration with home automation systems.([Hatica][1])
+* **Home Automation Ready**: Designed for easy integration with home automation systems.
 
 ---
 
@@ -42,7 +42,7 @@ Once the code is uploaded:
 2. **Copy the IP address** displayed in the Serial Monitor.
 3. **Open a web browser** on your computer or mobile device.
 4. **Paste the IP address** into the browser's address bar and press Enter.
-5. Your **smart switch virtual remote** is now ready on your device!([Medium][2])
+5. Your **smart switch virtual remote** is now ready on your device!
 
 ---
 
@@ -70,6 +70,6 @@ Contributions are welcome! Please **fork** the repository and submit a **pull re
 
 For any questions or suggestions, please **open an issue** on this repository.
 
-Email: [Click here](mailto:duttasunanda730@gmail.com)([Medium][2])
+Email: [Click here](mailto:duttasunanda730@gmail.com)
 
 ---
