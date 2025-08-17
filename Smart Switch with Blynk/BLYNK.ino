@@ -2,9 +2,9 @@
    Control Bulb with ESP8266 + Blynk + Relay
  *************************************************************/
 
-#define BLYNK_TEMPLATE_ID "TMPL36NzjrfRF"
+#define BLYNK_TEMPLATE_ID "TEMPLATE_ID"
 #define BLYNK_TEMPLATE_NAME "ZenInfiny Smart Light"
-#define BLYNK_AUTH_TOKEN "bVqPYMATnxi6PfmOxgwAJvvYvL6yN1Je"
+#define BLYNK_AUTH_TOKEN "XXXX"
 
 // Include libraries
 #include <ESP8266WiFi.h>
@@ -43,3 +43,4 @@ void setup() {
 void loop() {
   Blynk.run(); // Run Blynk background tasks
 }
+
