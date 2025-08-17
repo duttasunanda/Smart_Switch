@@ -1,7 +1,7 @@
 #include <WiFi.h> // this is the wifi libary for esp32 board 
                         //if your board is esp8266 then change "WiFi.h" to "ESP8266WiFi.h"
 
-const char* ssid = "smart bulb  "; // write here your wifi/hotspot name 
+const char* ssid = "smart bulb"; // write here your wifi/hotspot name 
 const char* password = "12345abcd"; // write here you wifi/hotspot password 
 
 const int relayPin = 2;// relay singnal pin has been declared at GPIO 2 (chage accordingly)
@@ -34,9 +34,9 @@ void loop() {// loop continue the instruction till the board gets power
     client.flush();//Clears any remaining data in the buffer that we don't need.
 
     if (request.indexOf("/ON") != -1) {//condition statement if cilent requset 'ON'  
-      digitalWrite(relayPin, HIGH);//relayPin will active means bulb will glow
+      digitalWrite(relayPin, LOW);//relayPin will active means bulb will glow
     } else if (request.indexOf("/OFF") != -1) {//condition statement if cilent requset 'off'  
-      digitalWrite(relayPin, LOW);//relayPin will deactive means bulb will turnoff
+      digitalWrite(relayPin, HIGH);//relayPin will deactive means bulb will turnoff
     }
 
     // Send decorative HTML
@@ -113,3 +113,4 @@ void loop() {// loop continue the instruction till the board gets power
     client.stop();// data send to server and stop and restart the loop 
   }
 }
+
