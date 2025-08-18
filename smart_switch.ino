@@ -1,97 +1,163 @@
-#include <WiFi.h> // this is the wifi libary for esp32 board 
-                        //if your board is esp8266 then change "WiFi.h" to "ESP8266WiFi.h"
+#include <WiFi.h>  // For ESP32 (use <ESP8266WiFi.h> if ESP8266)
 
-const char* ssid = "smart bulb"; // write here your wifi/hotspot name 
-const char* password = "12345abcd"; // write here you wifi/hotspot password 
+// WiFi credentials
+const char* ssid = "Souham_Net";
+const char* password = "pass@2307";
 
-const int relayPin = 2;// relay singnal pin has been declared at GPIO 2 (chage accordingly)
+// Relay pin (change as needed)
+const int relayPin = 5;  
 
-WiFiServer server(80);//creates a web server object that listens incoming connections on port 80, default port for https traffic 
+// Web server
+WiFiServer server(80);
 
-void setup() { // 'setup' is a stater code which starts the microcontroller and run the code only once 
-  Serial.begin(115200);// it starts communicating between microcontroller and computer at the rate of 115200 bits per second data transfer/recive  
-  pinMode(relayPin, OUTPUT);// sets relaypin(GPIO 2) as a output of the code 
-  digitalWrite(relayPin, LOW);//sets relaypin(GPIO 2) off initially  
+// Track relay state
+bool isRelayOn = false;
 
-  WiFi.begin(ssid, password);// connects with your wifi 
-  Serial.println("Connecting to WiFi...");// it prints the "Connecting to WiFi..." in the serial monitor
-  while (WiFi.status() != WL_CONNECTED) {// condition statement (while) which will conform wifi connectivity
-    delay(500);// gap of 0.5s
-    Serial.print(".");// if connection fail print '.' in serial moniter
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, HIGH);  // Keep relay OFF initially (active LOW relay)
+  isRelayOn = false;
+
+  // Connect WiFi
+  Serial.print("Connecting to WiFi...");
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
   }
+  Serial.println("\nWiFi connected.");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
 
-  Serial.println("\nConnected to WiFi.");// when connection successfull print "\nConnected to WiFi." in serial
-  Serial.print("IP Address: ");//  print ip address in serial 
-  Serial.println(WiFi.localIP());// provide local ip and print in serial 
-
-  server.begin(); //starts web server 
+  server.begin();
 }
 
-void loop() {// loop continue the instruction till the board gets power 
-  WiFiClient client = server.available();// This line waits for a new client to connect to with web server (in browser)
-  if (client) {// Checks if a valid client has connected
-    String request = client.readStringUntil('\r');//Reads the incoming HTTP request (from the user's browser).
-    client.flush();//Clears any remaining data in the buffer that we don't need.
+void loop() {
+  WiFiClient client = server.available();
+  if (client) {
+    Serial.println("New Client Connected!");
+    String request = client.readStringUntil('\n');  
+    request.trim();
+    Serial.println(request);
 
-    if (request.indexOf("/ON") != -1) {//condition statement if cilent requset 'ON'  
-      digitalWrite(relayPin, LOW);//relayPin will active means bulb will glow
-    } else if (request.indexOf("/OFF") != -1) {//condition statement if cilent requset 'off'  
-      digitalWrite(relayPin, HIGH);//relayPin will deactive means bulb will turnoff
+    // Ignore favicon request
+    if (request.indexOf("GET /favicon.ico") != -1) {
+      client.stop();
+      return;
     }
 
-    // Send decorative HTML
+    // Relay control
+    if (request.indexOf("GET /ON") != -1) {
+      digitalWrite(relayPin, LOW);   // Active LOW relay
+      isRelayOn = true;
+    } else if (request.indexOf("GET /OFF") != -1) {
+      digitalWrite(relayPin, HIGH);
+      isRelayOn = false;
+    }
+
+    // Send HTML response
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html");
+    client.println("Connection: close");
     client.println();
+
     client.println(R"rawliteral(
-<!DOCTYPE html>// html code for your web page 
+<!DOCTYPE html>
 <html>
 <head>
   <title>ZenInfiny Smart Bulb</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      background: #f5f7fa;
+    :root {
+      --bulb-off-color: #e0e0e0;
+      --bulb-on-color: #ffc107;
+      --background-color: #2c3e50;
+      --text-color: #ecf0f1;
+      --glow-color: rgba(255, 193, 7, 0.7);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--background-color);
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      color: #333;
-      padding: 50px;
+      color: var(--text-color);
     }
     h1 {
-      color: #007BFF;
-      font-size: 36px;
+      font-size: 2.5rem;
       margin-bottom: 10px;
     }
     .subtext {
-      font-size: 18px;
-      color: #555;
-      margin-bottom: 30px;
+      font-size: 1.2rem;
+      margin-bottom: 40px;
     }
-    .button {
-      display: inline-block;
-      padding: 15px 30px;
-      margin: 20px;
-      font-size: 20px;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 10px;
-      transition: 0.3s;
+    .bulb-container {
+      position: relative;
+      width: 150px;
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .on {
-      background-color: #28a745;
-      color: white;
+    #bulb::before {
+      content: '';
+      position: absolute;
+      top: -45px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 50px;
+      background: linear-gradient(to right, #b0b0b0, #8c8c8c, #b0b0b0);
+      border-radius: 5px 5px 0 0;
+      border-bottom: 2px solid #555;
+      z-index: 1;
     }
-    .on:hover {
-      background-color: #218838;
+    #bulb {
+      width: 150px;
+      height: 150px;
+      background: var(--bulb-off-color);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: relative;
+      transition: background-color 0.5s ease, box-shadow 0.5s ease;
     }
-    .off {
-      background-color: #dc3545;
-      color: white;
+    #bulb.on {
+      background-color: var(--bulb-on-color);
+      box-shadow: 0 0 15px var(--glow-color), 0 0 30px var(--glow-color), 0 0 60px var(--glow-color);
     }
-    .off:hover {
-      background-color: #c82333;
+    #pull-chain {
+      width: 4px;
+      height: 100px;
+      background-color: #bdc3c7;
+      position: absolute;
+      bottom: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: pointer;
+      transition: height 0.2s ease;
+    }
+    #pull-chain::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background-color: #bdc3c7;
+      border-radius: 50%;
+    }
+    #pull-chain:active {
+      height: 80px;
     }
     footer {
-      margin-top: 50px;
+      position: absolute;
+      bottom: 20px;
       font-size: 14px;
       color: #999;
     }
@@ -99,18 +165,42 @@ void loop() {// loop continue the instruction till the board gets power
 </head>
 <body>
   <h1>ZenInfiny Smart Bulb</h1>
-  <div class="subtext">Control your lighting with ease</div>
-  <a href="/ON" class="button on">Turn ON</a> 
-  <a href="/OFF" class="button off">Turn OFF</a>
+  <div class="subtext">Pull the chain to control the light</div>
+  <div class="bulb-container">
+    <div id="bulb"></div>
+    <div id="pull-chain"></div>
+  </div>
   <footer>
     Developed by Sunanda Dutta &copy; 2025 ZenInfiny
   </footer>
+
+  <script>
+    const bulb = document.getElementById('bulb');
+    const pullChain = document.getElementById('pull-chain');
+    let isBulbOn = %STATE%; // Initial state from ESP
+
+    if (isBulbOn) bulb.classList.add('on');
+
+    pullChain.addEventListener('click', () => {
+      isBulbOn = !isBulbOn;
+      if (isBulbOn) {
+        bulb.classList.add('on');
+        fetch('/ON');
+      } else {
+        bulb.classList.remove('on');
+        fetch('/OFF');
+      }
+    });
+  </script>
 </body>
 </html>
     )rawliteral");
 
+    // Inject current state into HTML
+    client.printf("%s", isRelayOn ? "true" : "false");
+
     delay(1);
-    client.stop();// data send to server and stop and restart the loop 
+    client.stop();
+    Serial.println("Client disconnected.");
   }
 }
-
