@@ -1,33 +1,25 @@
-#include <WiFi.h>  // For ESP32 (use <ESP8266WiFi.h> if ESP8266)
+#include <WiFi.h>
 
-// WiFi credentials
 const char* ssid = "Souham_Net";
 const char* password = "pass@2307";
 
-// Relay pin (change as needed)
-const int relayPin = 5;  
+const int relayPin = 2;
 
-// Web server
 WiFiServer server(80);
-
-// Track relay state
-bool isRelayOn = false;
 
 void setup() {
   Serial.begin(115200);
-
   pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, HIGH);  // Keep relay OFF initially (active LOW relay)
-  isRelayOn = false;
+  digitalWrite(relayPin, LOW);
 
-  // Connect WiFi
-  Serial.print("Connecting to WiFi...");
   WiFi.begin(ssid, password);
+  Serial.println("Connecting to WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\nWiFi connected.");
+
+  Serial.println("\nConnected to WiFi.");
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 
@@ -37,32 +29,19 @@ void setup() {
 void loop() {
   WiFiClient client = server.available();
   if (client) {
-    Serial.println("New Client Connected!");
-    String request = client.readStringUntil('\n');  
-    request.trim();
-    Serial.println(request);
+    String request = client.readStringUntil('\r');
+    client.flush();
 
-    // Ignore favicon request
-    if (request.indexOf("GET /favicon.ico") != -1) {
-      client.stop();
-      return;
-    }
-
-    // Relay control
-    if (request.indexOf("GET /ON") != -1) {
-      digitalWrite(relayPin, LOW);   // Active LOW relay
-      isRelayOn = true;
-    } else if (request.indexOf("GET /OFF") != -1) {
+    if (request.indexOf("/ON") != -1) {
+      digitalWrite(relayPin, LOW);
+    } else if (request.indexOf("/OFF") != -1) {
       digitalWrite(relayPin, HIGH);
-      isRelayOn = false;
     }
 
-    // Send HTML response
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html");
     client.println("Connection: close");
     client.println();
-
     client.println(R"rawliteral(
 <!DOCTYPE html>
 <html>
@@ -172,35 +151,30 @@ void loop() {
   </div>
   <footer>
     Developed by Sunanda Dutta &copy; 2025 ZenInfiny
+    The Webpage Is Developed By Debanjan
   </footer>
 
   <script>
     const bulb = document.getElementById('bulb');
     const pullChain = document.getElementById('pull-chain');
-    let isBulbOn = %STATE%; // Initial state from ESP
-
-    if (isBulbOn) bulb.classList.add('on');
+    let isBulbOn = false;
 
     pullChain.addEventListener('click', () => {
       isBulbOn = !isBulbOn;
+
       if (isBulbOn) {
         bulb.classList.add('on');
-        fetch('/ON');
+        fetch('/ON').catch(error => console.error('Error:', error));
       } else {
         bulb.classList.remove('on');
-        fetch('/OFF');
+        fetch('/OFF').catch(error => console.error('Error:', error));
       }
     });
   </script>
 </body>
 </html>
     )rawliteral");
-
-    // Inject current state into HTML
-    client.printf("%s", isRelayOn ? "true" : "false");
-
     delay(1);
     client.stop();
-    Serial.println("Client disconnected.");
   }
 }
