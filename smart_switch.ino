@@ -150,7 +150,7 @@ void loop() {
     <div id="pull-chain"></div>
   </div>
   <footer>
-    Developed by Sunanda, Debanjan and Souham Dutta's  &copy; 2025 ZenInfiny
+    Developed by Sunanda Dutta and Debanjan Dutta  &copy; 2025 ZenInfiny
   </footer>
 
   <script>
@@ -382,4 +382,5 @@ void loop() {
     Serial.println("Client disconnected.");
   }
 }
+
 
